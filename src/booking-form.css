@@ -349,3 +349,19 @@
     scroll-behavior: auto !important;
   }
 }
+
+.booking-promo {
+  display: grid;
+  gap: 0.4rem;
+  margin-top: 1rem;
+  font-weight: 600;
+}
+
+.booking-promo input {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--booking-border, #b8b8b8);
+  border-radius: 0.25rem;
+  font: inherit;
+}

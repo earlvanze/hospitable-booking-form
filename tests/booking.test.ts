@@ -106,3 +106,18 @@ test("quote rejects totals or populated schedules that cannot be reconciled", ()
     /checkout URL/,
   );
 });
+
+
+test("promo input is opt-in and documented in quote requests", () => {
+  const props = {
+    maxGuests: 8,
+    loadMonth: async () => ({ days: {} }),
+    checkAvailability: async () => ({ available: false }),
+    getQuote: async () => ({}),
+  };
+  const hidden = renderToStaticMarkup(React.createElement(HospitableBookingForm, props));
+  const shown = renderToStaticMarkup(React.createElement(HospitableBookingForm, { ...props, showPromoInput: true }));
+  assert.doesNotMatch(hidden, /Promo code/);
+  assert.match(shown, /Promo code \(optional\)/);
+  assert.match(shown, /maxLength="100"/);
+});

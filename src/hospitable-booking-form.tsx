@@ -13,6 +13,7 @@ export type StayRequest = {
   children: number;
   infants: number;
   pets: number;
+  promoCode?: string;
 };
 
 export type AvailabilityResult = {
@@ -33,6 +34,8 @@ export type BookingFormProps = {
   ) => Promise<AvailabilityResult>;
   getQuote: (request: StayRequest, signal: AbortSignal) => Promise<unknown>;
   checkoutHost?: string;
+  /** Show an optional promo-code field and include it in quote requests. */
+  showPromoInput?: boolean;
 };
 
 function localToday(timeZone: string) {
@@ -60,6 +63,7 @@ export function HospitableBookingForm({
   checkAvailability,
   getQuote,
   checkoutHost = "booking.hospitable.com",
+  showPromoInput = false,
 }: BookingFormProps) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
@@ -69,6 +73,7 @@ export function HospitableBookingForm({
   const [children, setChildren] = useState(0);
   const [infants, setInfants] = useState(0);
   const [pets, setPets] = useState(0);
+  const [promoCode, setPromoCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<AvailabilityResult | null>(null);
@@ -102,6 +107,7 @@ export function HospitableBookingForm({
       children,
       infants,
       pets,
+      ...(promoCode.trim() ? { promoCode: promoCode.trim() } : {}),
     };
     setBusy(true);
     setError("");
@@ -222,6 +228,24 @@ export function HospitableBookingForm({
             </select>
           </label>
         </div>
+        {showPromoInput && (
+          <label className="booking-promo">
+            Promo code (optional)
+            <input
+              type="text"
+              value={promoCode}
+              disabled={busy}
+              maxLength={100}
+              autoCapitalize="characters"
+              autoCorrect="off"
+              onChange={(event) => {
+                setPromoCode(event.target.value);
+                setResult(null);
+                setQuote(null);
+              }}
+            />
+          </label>
+        )}
         <button
           className="booking-submit"
           type="submit"

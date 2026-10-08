@@ -77,6 +77,7 @@ export function Booking() {
       loadMonth={loadMonth}
       checkAvailability={checkAvailability}
       getQuote={getQuote}
+      showPromoInput
     />
   );
 }
@@ -103,8 +104,10 @@ The calendar loader returns the month’s dates in this shape:
 ```
 
 `checkAvailability` receives `{ checkIn, checkOut, guests, adults, children,
-infants, pets }` and returns `{ available, minimumStay?, message? }`. `getQuote`
-receives the same request and returns a server-validated quote:
+infants, pets, promoCode? }` and returns `{ available, minimumStay?, message? }`. `getQuote`
+receives the same request and returns a server-validated quote. Set `showPromoInput`
+to render the optional field; an empty code is omitted and changing it clears any
+previous availability result and quote:
 
 ```json
 {
@@ -122,7 +125,10 @@ be a positive integer in cents and the scheduled amounts must add up to the
 quote total. `normalizeQuote` enforces those UI contract checks. Your server
 adapter must also validate the raw Hospitable response, including its total,
 fees, taxes, currency, and hosted checkout URL; never trust browser-supplied
-prices to create a reservation or payment.
+prices to create a reservation or payment. For Hospitable adapters, send a
+validated non-empty `promoCode` as `promo_code` to the authenticated Direct API
+(or `promotion` to the public widget quote API); never accept a discount claim
+without the provider’s fresh quote.
 
 ## LunaDome integration note
 
